@@ -4,8 +4,30 @@ const logsData = require("../models/log.model");
 
 //Index
 logs.get("/", (req, res) => {
-	res.json(logsData);
+	let filteredLogs = logsData;
+	if (req.query.order) {
+		filteredLogs = sortLogsData(filteredLogs, req.query.order);
+	}
+
+	if (req.query.mistakes) {
+		filteredLogs = filteredLogs.filter(
+			(log) => log.mistakesWereMadeToday === req.query.mistakes
+		);
+	}
+
+	res.status(200).json(filteredLogs);
 });
+function sortLogsData(logs, order) {
+	return [...logs].sort((a, b) => {
+		if (a.title < b.title) {
+			return order === "asc" ? -1 : 1;
+		} else if (a.title > b.title) {
+			return order === "asc" ? 1 : -1;
+		} else {
+			return 0;
+		}
+	});
+}
 
 //Show
 logs.get("/:arrayIndex", (req, res) => {
