@@ -2,6 +2,19 @@ const express=require(`express`)
 const logs=express.Router()
 let logsData=require(`../models/log`)
 
+logs.use((req,res,next)=>{
+  console.log(typeof req.body.captainName)
+  if(req.method===`POST`){
+    if(typeof req.body.id===`number`&&typeof req.body.captainName===`string`&&typeof req.body.post===`string`&&typeof req.body.mistakesWereMadeToday===`boolean`&&typeof req.body.daysSinceLastCrisis===`number`){
+      return next()
+    }
+    else res.send({error:`wrong data type`})
+  }
+  else return next()
+ 
+
+})
+
 logs.get(`/`,(req,res)=>{
     const order=req.query.order;
     const mistake=req.query.mistake;
