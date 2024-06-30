@@ -52,7 +52,7 @@ module.exports = [
     captainName: "Sarah Lance",
     title: "Jonah Hex",
     post: "I know you don’t like taking orders from a woman, but you’re gonna like getting your ass kicked by one even less.",
-    mistakesWereMadeToday: true,
+    mistakesWereMadeToday: false,
     daysSinceLastCrisis: 0,
   },
 ];

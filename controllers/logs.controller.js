@@ -5,14 +5,19 @@ const logsData = require("../models/log.model");
 //Index
 logs.get("/", (req, res) => {
 	let filteredLogs = logsData;
+
 	if (req.query.order) {
 		filteredLogs = sortLogsData(filteredLogs, req.query.order);
 	}
 
 	if (req.query.mistakes) {
 		filteredLogs = filteredLogs.filter(
-			(log) => log.mistakesWereMadeToday === req.query.mistakes
+			(log) => `${log.mistakesWereMadeToday}` === req.query.mistakes
 		);
+	}
+
+	if (req.query.lastCrisis) {
+		filteredLogs = filterByLastCrisisQuery(filteredLogs, req.query.lastCrisis);
 	}
 
 	res.status(200).json(filteredLogs);
@@ -25,6 +30,28 @@ function sortLogsData(logs, order) {
 			return order === "asc" ? 1 : -1;
 		} else {
 			return 0;
+		}
+	});
+}
+function filterByLastCrisisQuery(logs, lastCrisis) {
+	const [_, operator, valString] = lastCrisis.match(/^(gt|gte|lt|lte)(\d+)$/);
+	const valueNum = Number(valString);
+	return logs.filter((log) => {
+		switch (operator) {
+			case "gt":
+				return log.daysSinceLastCrisis > valueNum;
+
+			case "gte":
+				return log.daysSinceLastCrisis >= valueNum;
+
+			case "lt":
+				return log.daysSinceLastCrisis < valueNum;
+
+			case "lte":
+				return log.daysSinceLastCrisis <= valueNum;
+
+			default:
+				return true;
 		}
 	});
 }
