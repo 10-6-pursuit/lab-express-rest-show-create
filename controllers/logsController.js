@@ -24,7 +24,7 @@ logs.delete("/:id", (req, res) => {
         res.redirect("/logs");
     } else {
         res.status(404).send({error404: `${id} Not Found`});
-    }
+    };
 });
 
 //PUT
@@ -36,7 +36,17 @@ logs.put("/:id", (req, res) => {
         res.json(logsArray[indexToUpdate]);
     } else {
         res.status(404).send({error404: `${id} Not Found`});
+    };
+});
+
+//SHOW
+logs.get("/:index", (req, res) => {
+    const { index } = req.params;
+    if(index > logsArray.length){
+        res.redirect("/logs/not-found");
+    } else {
+        res.status(200).json(logsArray[index]);
     }
-})
+});
 
 module.exports = logs;
