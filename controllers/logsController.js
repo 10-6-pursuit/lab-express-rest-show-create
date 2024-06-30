@@ -10,19 +10,30 @@ logs.get("/", (req, res) => {
 
 //CREATE
 logs.post("/", (req, res) => {
-    const incomingLog = { id: logsArray.length + 1, ...req.body};
+    const incomingLog = {...req.body};
     logsArray.push(incomingLog);
     res.status(201).send(logsArray[logsArray.length - 1]);
 });
 
 //DELETE
-
 logs.delete("/:id", (req, res) => {
     const { id } = req.params;
     const indexToDelete = logsArray.findIndex(log => log.id === +id);
     if(indexToDelete !== -1){
         logsArray.splice(indexToDelete, 1);
         res.redirect("/logs");
+    } else {
+        res.status(404).send({error404: `${id} Not Found`});
+    }
+});
+
+//PUT
+logs.put("/:id", (req, res) => {
+    const { id } = req.params;
+    const indexToUpdate = logsArray.findIndex(log => log.id === +id);
+    if(indexToUpdate !== -1){
+        logsArray[indexToUpdate] = {...logsArray[indexToUpdate], ...req.body}
+        res.json(logsArray[indexToUpdate]);
     } else {
         res.status(404).send({error404: `${id} Not Found`});
     }
