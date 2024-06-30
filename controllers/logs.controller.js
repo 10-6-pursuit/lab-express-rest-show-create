@@ -68,8 +68,30 @@ logs.get("/:arrayIndex", (req, res) => {
 	}
 });
 
+function checkType(req, res, next) {
+	console.log(req.body, "k hay");
+	const {
+		captainName,
+		title,
+		post,
+		mistakesWereMadeToday,
+		daysSinceLastCrisis,
+	} = req.body;
+	if (
+		typeof captainName !== "string" ||
+		typeof title !== "string" ||
+		typeof post !== "string" ||
+		typeof mistakesWereMadeToday !== "boolean" ||
+		typeof daysSinceLastCrisis !== "number"
+	) {
+		res.status(400).json({ msg: "Bad Request. Invalid type" });
+	} else {
+		return next();
+	}
+}
 //create
-logs.post("/", (req, res) => {
+logs.post("/", checkType, (req, res) => {
+	console.log(req.body);
 	logsData.push(req.body);
 	res.json(logsData[logsData.length - 1]);
 });
